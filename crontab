@@ -1,0 +1,5 @@
+#@daily /opt/scripts/pull-access-logs.sh
+0 0 * * * /opt/scripts/pull-access-logs.sh
+
+#@hourly /opt/scripts/pull-access-logs.sh
+0 * * * * /opt/scripts/pull-access-logs.sh

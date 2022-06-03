@@ -1,0 +1,162 @@
+#version: "3"
+
+services:
+
+  # ------------------------------------------------------
+  # traefik
+  # ------------------------------------------------------
+
+  traefik:
+    image: traefik:latest
+    container_name: traefik
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      #- "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+      - "--certificatesresolvers.myresolver.acme.email=monitor+letsencrypt@medienhaus.dev"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - ./letsencrypt:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  # ------------------------------------------------------
+  # postgres
+  # ------------------------------------------------------
+
+  #postgres:
+  #  image: postgres:latest
+  #  container_name: postgres
+  #  restart: unless-stopped
+  #  environment:
+  #    POSTGRES_USER: postgres
+  #    POSTGRES_PASSWORD: super_sudo
+  #    POSTGRES_DB: postgres
+  #  #ports:
+  #  #  - "5432:5432"
+  #  volumes:
+  #    - ./postgres/data/:/var/lib/postgresql/data/
+
+  # ------------------------------------------------------
+  # redis
+  # ------------------------------------------------------
+
+  #redis:
+  #  image: redis:latest
+  #  container_name: redis
+  #  restart: unless-stopped
+  #  volumes:
+  #    - ./data/redis:/data
+
+  # ------------------------------------------------------
+  # goaccess
+  # ------------------------------------------------------
+
+  goaccess:
+    image: nginx:latest
+    container_name: goaccess
+    restart: unless-stopped
+    depends_on:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      #- "traefik.http.routers.goaccess.entrypoints=web"
+      - "traefik.http.routers.goaccess.entrypoints=websecure"
+      - "traefik.http.routers.goaccess.tls.certresolver=myresolver"
+      - "traefik.http.routers.goaccess.rule=Host(`goaccess.monitor.medienhaus.dev`)"
+    #ports:
+    #  - "7890:7890"
+    volumes:
+      - ./data/goaccess/var/www/html:/var/www/html
+      - ./config/goaccess--nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      #- ./config/goaccess--.htpasswd:/etc/nginx/conf.d/htpasswd:ro
+
+  # ------------------------------------------------------
+  # grafana
+  # ------------------------------------------------------
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    restart: unless-stopped
+    depends_on:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      #- "traefik.http.routers.grafana.entrypoints=web"
+      - "traefik.http.routers.grafana.entrypoints=websecure"
+      - "traefik.http.routers.grafana.tls.certresolver=myresolver"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.monitor.medienhaus.dev`)"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./config/grafana.ini:/etc/grafana/grafana.ini
+      #- ./data/grafana:/var/lib/grafana
+      - grafana_data:/var/lib/grafana
+
+  # ------------------------------------------------------
+  # node-exporter
+  # ------------------------------------------------------
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    #ports:
+    #  - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+
+  # ------------------------------------------------------
+  # prometheus
+  # ------------------------------------------------------
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    #ports:
+    #  - "9090:9090"
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      #- ./data/prometheus:/var/lib/prometheus
+      - prometheus_data:/var/lib/prometheus
+
+# ------------------------------------------------------
+# networks
+# ------------------------------------------------------
+
+networks:
+  default:
+    driver: bridge
+
+# ------------------------------------------------------
+# volumes
+# ------------------------------------------------------
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}

@@ -1,0 +1,58 @@
+global:
+  evaluation_interval: 15s
+  scrape_interval: 15s
+  scrape_timeout: 10s
+
+  #external_labels:
+  #    monitor: 'example'
+
+#alerting:
+#  alertmanagers:
+#  - static_configs:
+#    - targets: ['localhost:9093']
+
+#rule_files:
+#   #- "first_rules.yml"
+#   #- "second_rules.yml"
+
+scrape_configs:
+  #- job_name: 'prometheus'
+  #  metric_path: '/metrics'
+  #  scrape_interval: 5s
+  #  scrape_timeout: 5s
+  #  static_configs:
+  #    - targets: ['localhost:9090']
+
+  # NODE_EXPORTER
+  
+  - job_name: 'node'
+    scrape_interval: 15s
+    static_configs:
+      - targets: 
+        # localhost
+        - 'node-exporter:9100'
+        # dev.medienhaus.udk-berlin.de
+        - '194.95.202.68:9100'
+
+  # MATRIX-SYNAPSE
+  
+  - job_name: 'synapse_dev'
+    scrape_interval: 15s
+    metrics_path: '/_synapse/metrics'
+    static_configs:
+      - targets: 
+        - '194.95.202.68:9000'
+
+  - job_name: 'synapse_content'
+    scrape_interval: 15s
+    metrics_path: '/_synapse/metrics'
+    static_configs:
+      - targets: 
+        - '194.95.202.218:9000'
+
+  - job_name: 'synapse_medienhaus'
+    scrape_interval: 15s
+    metrics_path: '/_synapse/metrics'
+    static_configs:
+      - targets: 
+        - '194.95.202.121:9000'

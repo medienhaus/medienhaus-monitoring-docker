@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="author" content="medienhaus/">
+    <meta name="description" content="Berlin University of the Arts’ free and open-source environment for digital learning, teaching, and collaboration.">
+    <meta name="keywords" content="medienhaus, free, open-source, berlin university of the arts, universitaet der kuenste berlin, udk, berlin, matrix, learning, teaching, collaboration">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/x-icon" href="./favicon.ico" sizes="16x16 32x32">
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" sizes="any">
+    <link rel="mask-icon" type="image/svg+xml" href="./favicon.svg">
+    <link rel="license" href="//creativecommons.org/licenses/by-nc-nd/4.0">
+    <link rel="stylesheet" type="text/css" href="./assets/css/index.css">
+    <title>udk/spaces — Analytics & Statistics</title>
+  </head>
+  <body>
+    <header>
+      <h1>udk/spaces — Analytics & Statistics</h1>
+    </header>
+    <main>
+      <section id="spaces">
+        <iframe class="general" src="/spaces.html" width="100%" scrolling="no" title="visitor’s general statistics of udk/spaces"></iframe>
+        <iframe class="visitors" src="/spaces.html" width="100%" scrolling="no" title="visitor statistics of udk/spaces"></iframe>
+        <iframe class="visit_time" src="/spaces.html" width="100%" scrolling="no" title="time distribution statistics of udk/spaces"></iframe>
+        <iframe class="os" src="/spaces.html" width="100%" scrolling="no" title="operating system statistics of udk/spaces"></iframe>
+        <iframe class="browsers" src="/spaces.html" width="100%" scrolling="no" title="browser statistics of udk/spaces"></iframe>
+      </section>
+      <aside>
+        <section id="poll">
+          <h2>udk/poll</h2>
+          <iframe class="visitors" src="/poll.html" width="100%" scrolling="no" title="visitor statistics of udk/poll"></iframe>
+        </section>
+        <section id="rundgang">
+          <h2>udk/rundgang</h2>
+          <iframe class="visitors" src="/rundgang.html" width="100%" scrolling="no" title="visitor statistics of udk/rundgang"></iframe>
+        </section>
+        <section id="sketch">
+          <h2>udk/sketch</h2>
+          <iframe class="visitors" src="/sketch.html" width="100%" scrolling="no" title="visitor statistics of udk/sketch"></iframe>
+        </section>
+        <section id="stream">
+          <h2>udk/stream</h2>
+          <iframe class="visitors" src="/stream.html" width="100%" scrolling="no" title="visitor statistics of udk/stream"></iframe>
+        </section>
+        <section id="write">
+          <h2>udk/write</h2>
+          <iframe class="visitors" src="/write.html" width="100%" scrolling="no" title="visitor statistics of udk/write"></iframe>
+        </section>
+      </aside>
+    </main>
+    <footer>
+      <p className="copyleft">&#x1f12f; 202X <a href="https://medienhaus.dev" rel="nofollow noopener noreferrer"><strong>medienhaus/</strong></a></p>
+    </footer>
+    <script>
+      function goGoAccess(iframe) {
+        let framed;
+        let element = iframe.contentWindow.document.getElementById("panel-" + iframe.className);
+
+        switch (iframe.className) {
+          case "general":
+            framed = iframe.contentWindow.document.querySelectorAll("nav, nav + i, .page-header, .wrap-panels, .wrap-general-items > div:nth-of-type(1) > div:nth-of-type(4), .wrap-general-items > div:nth-of-type(1) > :nth-of-type(6), .wrap-general-items > div:nth-of-type(2) > :nth-of-type(1), .wrap-general-items > div:nth-of-type(2) > :nth-of-type(5)");
+            element = iframe.contentWindow.document.querySelector(".wrap-header > div:nth-of-type(1) > div:nth-of-type(1) > .wrap-general > div > div:nth-of-type(1)");
+          break;
+
+          case "visitors":
+            framed = iframe.contentWindow.document.querySelectorAll("nav, nav + i, .wrap-header, .wrap-panels > .row.equal:not(:nth-of-type(1)), .wrap-panels > .row.equal:nth-of-type(1) > :not(.wrap-panel:nth-of-type(1)), .table-wrapper.hidden-xs");
+          break;
+
+          case "visit_time":
+            framed = iframe.contentWindow.document.querySelectorAll("nav, nav + i, .wrap-header, .wrap-panels > .row.equal:not(:nth-of-type(4)), .wrap-panels > .row.equal:nth-of-type(4) > :not(.wrap-panel:nth-of-type(2)), .table-wrapper.hidden-xs");
+          break;
+
+          case "os":
+            framed = iframe.contentWindow.document.querySelectorAll("nav, nav + i, .wrap-header, .wrap-panels > .row.equal:not(:nth-of-type(3)), .wrap-panels > .row.equal:nth-of-type(3) > :not(.wrap-panel:nth-of-type(2)), .table-wrapper.hidden-xs");
+          break;
+
+          case "browsers":
+            framed = iframe.contentWindow.document.querySelectorAll("nav, nav + i, .wrap-header, .wrap-panels > .row.equal:not(:nth-of-type(4)), .wrap-panels > .row.equal:nth-of-type(4) > :not(.wrap-panel:nth-of-type(1)), .table-wrapper.hidden-xs");
+          break;
+        }
+
+        framed.forEach(child => {
+          child.classList.add('hidden');
+        });
+
+        element.style.borderTop = "unset";
+        iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 20 + "px";
+      }
+
+      let iframes = document.querySelectorAll("iframe");
+
+      iframes.forEach(iframe => {
+        iframe.addEventListener("load", () => {
+          goGoAccess(iframe);
+        });
+      });
+
+      window.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") {
+          setTimeout(function () { goGoAccess(document.querySelector('iframe.general')); }, 0);
+        }
+      });
+    </script>
+  </body>
+</html>
