@@ -39,9 +39,9 @@ services:
   #  container_name: postgres
   #  restart: unless-stopped
   #  environment:
-  #    POSTGRES_USER: postgres
-  #    POSTGRES_PASSWORD: super_sudo
-  #    POSTGRES_DB: postgres
+  #    - POSTGRES_USER=postgres
+  #    - POSTGRES_PASSWORD=super_sudo
+  #    - POSTGRES_DB=postgres
   #  #ports:
   #  #  - "5432:5432"
   #  volumes:
@@ -70,7 +70,6 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      #- "traefik.http.routers.goaccess.entrypoints=web"
       - "traefik.http.routers.goaccess.entrypoints=websecure"
       - "traefik.http.routers.goaccess.tls.certresolver=myresolver"
       - "traefik.http.routers.goaccess.rule=Host(`goaccess.monitor.medienhaus.dev`)"
@@ -93,7 +92,6 @@ services:
       - traefik
     labels:
       - "traefik.enable=true"
-      #- "traefik.http.routers.grafana.entrypoints=web"
       - "traefik.http.routers.grafana.entrypoints=websecure"
       - "traefik.http.routers.grafana.tls.certresolver=myresolver"
       - "traefik.http.routers.grafana.rule=Host(`grafana.monitor.medienhaus.dev`)"
@@ -113,10 +111,10 @@ services:
     container_name: node-exporter
     restart: unless-stopped
     command:
-      - '--path.procfs=/host/proc'
-      - '--path.sysfs=/host/sys'
-      - '--path.rootfs=/rootfs'
-      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+      - "--path.procfs=/host/proc"
+      - "--path.sysfs=/host/sys"
+      - "--path.rootfs=/rootfs"
+      - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)"
     #ports:
     #  - "9100:9100"
     volumes:
@@ -133,11 +131,11 @@ services:
     container_name: prometheus
     restart: unless-stopped
     command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/etc/prometheus/console_libraries'
-      - '--web.console.templates=/etc/prometheus/consoles'
-      - '--web.enable-lifecycle'
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/etc/prometheus/console_libraries"
+      - "--web.console.templates=/etc/prometheus/consoles"
+      - "--web.enable-lifecycle"
     #ports:
     #  - "9090:9090"
     volumes:
