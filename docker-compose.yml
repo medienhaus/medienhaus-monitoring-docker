@@ -39,9 +39,12 @@ services:
   #  container_name: postgres
   #  restart: unless-stopped
   #  environment:
-  #    - POSTGRES_USER=postgres
-  #    - POSTGRES_PASSWORD=super_sudo
-  #    - POSTGRES_DB=postgres
+  #    #- "POSTGRES_USER=postgres"
+  #    #- "POSTGRES_PASSWORD=super_sudo"
+  #    #- "POSTGRES_DB=postgres"
+  #    POSTGRES_USER: "postgres"
+  #    POSTGRES_PASSWORD: "super_sudo"
+  #    POSTGRES_DB: "postgres"
   #  #ports:
   #  #  - "5432:5432"
   #  volumes:
@@ -69,10 +72,14 @@ services:
     depends_on:
       - traefik
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.goaccess.entrypoints=websecure"
-      - "traefik.http.routers.goaccess.tls.certresolver=myresolver"
-      - "traefik.http.routers.goaccess.rule=Host(`goaccess.monitor.medienhaus.dev`)"
+      #- "traefik.enable=true"
+      #- "traefik.http.routers.goaccess.entrypoints=websecure"
+      #- "traefik.http.routers.goaccess.tls.certresolver=myresolver"
+      #- "traefik.http.routers.goaccess.rule=Host(`goaccess.monitor.medienhaus.dev`)"
+      traefik.enable: "true"
+      traefik.http.routers.goaccess.entrypoints: "websecure"
+      traefik.http.routers.goaccess.tls.certresolver: "myresolver"
+      traefik.http.routers.goaccess.rule: "Host(`goaccess.monitor.medienhaus.dev`)"
     #ports:
     #  - "7890:7890"
     volumes:
@@ -91,10 +98,14 @@ services:
     depends_on:
       - traefik
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.grafana.entrypoints=websecure"
-      - "traefik.http.routers.grafana.tls.certresolver=myresolver"
-      - "traefik.http.routers.grafana.rule=Host(`grafana.monitor.medienhaus.dev`)"
+      #- "traefik.enable=true"
+      #- "traefik.http.routers.grafana.entrypoints=websecure"
+      #- "traefik.http.routers.grafana.tls.certresolver=myresolver"
+      #- "traefik.http.routers.grafana.rule=Host(`grafana.monitor.medienhaus.dev`)"
+      traefik.enable: "true"
+      traefik.http.routers.grafana.entrypoints: "websecure"
+      traefik.http.routers.grafana.tls.certresolver: "myresolver"
+      traefik.http.routers.grafana.rule: "Host(`grafana.monitor.medienhaus.dev`)"
     ports:
       - "3000:3000"
     volumes:
