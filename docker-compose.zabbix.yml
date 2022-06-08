@@ -92,7 +92,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - ./data/zabbix/etc/ssl/nginx:/etc/ssl/nginx:ro
-      - ./data/zabbix/usr/share/zabbix/modules/:/usr/share/zabbix/modules/:ro
+      - ./data/zabbix/usr/share/zabbix/modules:/usr/share/zabbix/modules:ro
     deploy:
       resources:
         limits:
