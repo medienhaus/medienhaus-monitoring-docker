@@ -204,8 +204,7 @@ services:
     image: postgres:13-alpine
     container_name: postgres-server
     restart: unless-stopped
-    command:
-      - "-c ssl=on -c ssl_cert_file=/run/secrets/server-cert.pem -c ssl_key_file=/run/secrets/server-key.pem -c ssl_ca_file=/run/secrets/root-ca.pem"
+    #command: "-c ssl=on -c ssl_cert_file=/run/secrets/server-cert.pem -c ssl_key_file=/run/secrets/server-key.pem -c ssl_ca_file=/run/secrets/root-ca.pem"
     volumes:
       - ./config/zabbix/.ZBX_DB_CA_FILE:/run/secrets/root-ca.pem:ro
       - ./config/zabbix/.ZBX_DB_CERT_FILE:/run/secrets/server-cert.pem:ro
